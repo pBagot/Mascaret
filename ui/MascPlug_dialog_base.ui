@@ -54,7 +54,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QgsProjectionSelectionWidget" name="crsWidget">
+       <widget class="QgsProjectionSelectionWidget" name="crsWidget" native="true">
         <property name="minimumSize">
          <size>
           <width>300</width>
@@ -340,6 +340,19 @@
    <addaction name="actionParameters_Water_Quality"/>
    <addaction name="actionTracer_Laws"/>
   </widget>
+  <widget class="QToolBar" name="tempToolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionTest_Law"/>
+   <addaction name="actionTest_Obs"/>
+  </widget>
   <action name="actionWebsite">
    <property name="icon">
     <iconset resource="../resources.qrc">
@@ -590,6 +603,22 @@
   <action name="actionAdd_WQ_tables">
    <property name="text">
     <string>Add WQ tables</string>
+   </property>
+  </action>
+  <action name="actionTest_Law">
+   <property name="text">
+    <string>Laws</string>
+   </property>
+   <property name="toolTip">
+    <string>Test Law</string>
+   </property>
+  </action>
+  <action name="actionTest_Obs">
+   <property name="text">
+    <string>Obs</string>
+   </property>
+   <property name="toolTip">
+    <string>Test Obs</string>
    </property>
   </action>
  </widget>

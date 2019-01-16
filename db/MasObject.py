@@ -762,3 +762,28 @@ class init_conc_wq(MasObject):
             ('CONSTRAINT cle_init_conc_wq', 'PRIMARY KEY (id_config, id_trac, bief,abscissa)')]
 
 # *****************************************
+
+class laws_config(MasObject):
+    def __init__(self):
+        super(laws_config, self).__init__()
+        self.order = 26
+        self.geom_type = None
+        self.attrs = [
+            ('id', 'serial NOT NULL'),
+            ('name', 'character varying(30)'),
+            ('starttime', 'timestamp without time zone'),
+            ('endtime', 'timestamp without time zone'),
+            ('type', 'integer'),
+            ('CONSTRAINT cle_laws_conf', 'PRIMARY KEY (id)')]
+
+class laws_test(MasObject):
+    def __init__(self):
+        super(laws_test, self).__init__()
+        self.order = 27
+        self.geom_type = None
+        self.attrs = [
+            ('id_law', 'integer'),
+            ('id_var', 'integer'),
+            ('idx', 'integer'),
+            ('value', 'float'),
+            ('CONSTRAINT cle_laws_test', 'PRIMARY KEY (id_law, id_var, idx)')]

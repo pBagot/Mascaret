@@ -43,6 +43,8 @@ from .Class_Mascaret import Class_Mascaret
 from .parameter_dialog import parameter_dialog
 from .ui.custom_control import Class_warningBox
 
+from .laws_dialog import laws_dialog
+
 import math
 import os
 import datetime
@@ -170,7 +172,10 @@ class MascPlugDialog(QMainWindow):
         # test
         self.ui.actionexport_tracer_files.triggered.connect(self.fct_export_tracer_files)
         self.ui.actionAdd_WQ_tables.triggered.connect(self.fct_add_wq_tables)
-
+        # self.ui.actionAbout.setEnabled(False)
+        # test APN
+        self.ui.actionTest_Law.triggered.connect(self.import_law)
+        self.ui.actionTest_Obs.triggered.connect(self.import_obs)
 
     def addInfo(self, text):
         self.ui.textEdit.append(text)
@@ -364,6 +369,13 @@ class MascPlugDialog(QMainWindow):
         ###**************************************
         ## Menus Functions
         ###**************************************
+
+    def import_law(self):
+        dlg = laws_dialog(self)
+        dlg.exec_()
+
+    def import_obs(self):
+        print('obs')
 
     def MntToProfil(self):
         """
