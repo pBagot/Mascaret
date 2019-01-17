@@ -764,3 +764,10 @@ Version : {}
                                'WARNING: if the tables exist then it will be emptied.')
         if ok:
             self.mdb.add_table_wq(self.dossierSQL)
+
+    def fct_udpate_laws(self):
+
+        ok = self.box.yes_no_q('Do you want update law tables ? \n '
+                               'WARNING: if the tables exist then it will be emptied.')
+        if ok:
+            self.mdb.add_laws_hyd(self.dossierSQL)
