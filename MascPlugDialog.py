@@ -35,6 +35,7 @@ from .WaterQuality.ClassWaterQualityDialog import ClassWaterQualityDialog
 # # water quality
 from .WaterQuality.TracerLawsDialog import ClassTracerLawsDialog
 from .db.ClassMasDatabase import ClassMasDatabase
+from .LawsDialog import ClassLawsDialog
 from .ui.custom_control import ClassWarningBox
 
 if int(qVersion()[0]) < 5:  # qt4
@@ -42,8 +43,6 @@ if int(qVersion()[0]) < 5:  # qt4
 else:  # qt5
     from qgis.PyQt.QtWidgets import *
 
-
-from .laws_dialog import laws_dialog
 
 class MascPlugDialog(QMainWindow):
     OPT_GENERAL, OPT_mdb, OPT_DTM = range(3)
@@ -362,12 +361,12 @@ class MascPlugDialog(QMainWindow):
         else:
             self.add_info('Droping Model cancelled.')
 
-        ###**************************************
-        ## Menus Functions
-        ###**************************************
+            # **************************************
+            # Menus Functions
+            # **************************************
 
     def import_law(self):
-        dlg = laws_dialog(self)
+        dlg = ClassLawsDialog(self)
         dlg.exec_()
 
     def import_obs(self):

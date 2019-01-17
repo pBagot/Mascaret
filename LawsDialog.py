@@ -17,28 +17,24 @@ email                :
  *                                                                         *
  ***************************************************************************/
 """
-
-
+import os
+from datetime import datetime, timedelta
+from matplotlib.dates import date2num
 from qgis.PyQt.QtCore import *
 from qgis.PyQt.QtWidgets import *
 from qgis.PyQt.uic import *
-if int(qVersion()[0])<5:  #qt4
+from qgis.core import *
+from qgis.gui import *
+from qgis.utils import *
+
+from .Function import data_to_float, data_to_date
+
+if int(qVersion()[0]) < 5:  # qt4
     from qgis.PyQt.QtGui import *
-else: #qt5
+else:  # qt5
     from qgis.PyQt.QtGui import QStandardItemModel, QStandardItem, QKeySequence
     from qgis.PyQt.QtWidgets import *
 
-import os
-from datetime import datetime, timedelta
-import dateutil
-from matplotlib.dates import date2num
-
-from qgis.core import *
-from qgis.utils import *
-from qgis.gui import *
-
-# from .graph_WQ import GraphMeteo
-# from .table_WQ import table_WQ
 
 dico_typ_law = {1: {'name': 'Hydrograph Q(t)',
                     'var': [{'name': 'time', 'leg': 'time', 'unit': 's'},
@@ -54,7 +50,8 @@ dico_typ_law = {1: {'name': 'Hydrograph Q(t)',
                     'xIsTime': False}
                 }
 
-class laws_dialog(QDialog):
+
+class ClassLawsDialog(QDialog):
     def __init__(self, mgis):
         QDialog.__init__(self)
         self.mgis = mgis
@@ -68,7 +65,7 @@ class laws_dialog(QDialog):
         self.ui.de_end.setDisplayFormat("dd/MM/yyyy HH:mm:ss")
 
         self.ui.tab_sets.sCut_del = QShortcut(QKeySequence("Del"), self)
-        self.ui.tab_sets.sCut_del.activated.connect(self.shortCut_row_del)
+        self.ui.tab_sets.sCut_del.activated.connect(self.short_cut_row_del)
 
         self.bg_time = QButtonGroup()
         self.bg_time.addButton(self.rb_sec, 0)
@@ -78,9 +75,9 @@ class laws_dialog(QDialog):
         self.bg_time.addButton(self.rb_date, 4)
         self.bg_time.buttonClicked[int].connect(self.chg_time)
 
-        styledItemDelegate = QStyledItemDelegate()
-        styledItemDelegate.setItemEditorFactory(ItemEditorFactory())
-        self.ui.tab_sets.setItemDelegate(styledItemDelegate)
+        styled_item_delegate = QStyledItemDelegate()
+        styled_item_delegate.setItemEditorFactory(ItemEditorFactory())
+        self.ui.tab_sets.setItemDelegate(styled_item_delegate)
 
         self.ui.actionB_edit.triggered.connect(self.edit_set)
         self.ui.actionB_new.triggered.connect(self.new_set)
@@ -88,37 +85,35 @@ class laws_dialog(QDialog):
         self.ui.actionB_import.triggered.connect(self.import_csv)
         self.ui.actionB_addLine.triggered.connect(self.new_time)
         self.ui.actionB_delLine.triggered.connect(self.delete_time)
-        self.ui.b_OK_page2.accepted.connect(self.acceptPage2)
-        self.ui.b_OK_page2.rejected.connect(self.rejectPage2)
+        self.ui.b_OK_page2.accepted.connect(self.accept_page2)
+        self.ui.b_OK_page2.rejected.connect(self.reject_page2)
         self.ui.b_OK_page1.accepted.connect(self.reject)
         self.ui.de_start.dateTimeChanged.connect(self.change_date_start)
         self.ui.de_end.dateTimeChanged.connect(self.change_date_end)
 
-        self.initUI()
+        self.init_ui()
 
-
-    def displayGraphHome(self):
+    def display_graph_home(self):
         return
-        if self.ui.lst_laws.selectedIndexes():
-            l = self.ui.lst_laws.selectedIndexes()[0].row()
-            id_law = int(self.ui.lst_laws.model().item(l, 0).text())
-            self.graph_home.initGraph(id_law)
-        else:
-            self.graph_home.initGraph(None)
+        # if self.ui.lst_laws.selectedIndexes():
+        #     l = self.ui.lst_laws.selectedIndexes()[0].row()
+        #     id_law = int(self.ui.lst_laws.model().item(l, 0).text())
+        #     self.graph_home.initGraph(id_law)
+        # else:
+        #     self.graph_home.initGraph(None)
 
-    def initUI(self):
+    def init_ui(self):
         self.ui.laws_pages.setCurrentIndex(0)
         # self.graph_home = GraphMeteo(self.mgis, self.ui.lay_graph_home, self.dico_var)
         # self.graph_edit = GraphMeteo(self.mgis, self.ui.lay_graph_edit, self.dico_var)
         self.fill_lst_law()
-
 
     def fill_lst_law(self, id=None):
         model = QStandardItemModel()
         model.setColumnCount(2)
         self.ui.lst_laws.setModel(model)
         self.ui.lst_laws.setModelColumn(1)
-        self.ui.lst_laws.selectionModel().selectionChanged.connect(self.displayGraphHome)
+        self.ui.lst_laws.selectionModel().selectionChanged.connect(self.display_graph_home)
 
         sql = "SELECT * FROM {0}.laws_config ORDER BY name".format(self.mdb.SCHEMA)
         rows = self.mdb.run_query(sql, fetch=True)
@@ -129,14 +124,13 @@ class laws_dialog(QDialog):
                 new_itm.setEditable(False)
                 self.ui.lst_laws.model().setItem(i, j, new_itm)
 
-        # if id:
-        #     for r in range(self.ui.lst_laws.model().rowCount()):
-        #         if str(self.ui.lst_laws.model().item(r, 0).text()) == str(id):
-        #             self.ui.lst_laws.setCurrentIndex(self.ui.lst_laws.model().item(r, 1).index())
-        #             break
-        # else:
-        #     self.displayGraphHome()
-
+                # if id:
+                #     for r in range(self.ui.lst_laws.model().rowCount()):
+                #         if str(self.ui.lst_laws.model().item(r, 0).text()) == str(id):
+                #             self.ui.lst_laws.setCurrentIndex(self.ui.lst_laws.model().item(r, 1).index())
+                #             break
+                # else:
+                #     self.display_graph_home()
 
     def change_date_start(self):
         date, time = self.ui.de_start.date().toString('dd-MM-yyyy'), self.ui.de_start.time().toString('HH:mm:ss')
@@ -153,15 +147,13 @@ class laws_dialog(QDialog):
                         model.setItem(r, 4, date_itm)
                     date = self.date_start + timedelta(seconds=model.item(r, 0).data(0))
                     model.item(r, 4).setData(QDateTime(date), 0)
-                # if self.bg_time.checkedId() == 4:
-                #     self.update_courbe("all")
-
+                    # if self.bg_time.checkedId() == 4:
+                    #     self.update_courbe("all")
 
     def change_date_end(self):
         date, time = self.ui.de_end.date().toString('dd-MM-yyyy'), self.ui.de_end.time().toString('HH:mm:ss')
         date_str = "'{} {}'".format(date, time)
         self.date_end = data_to_date(date_str)
-
 
     def create_tab_model(self):
         self.list_var = []
@@ -180,15 +172,14 @@ class laws_dialog(QDialog):
                     model.setHeaderData(cur_col, 1, col["name"], 0)
                     cur_col += 1
             else:
-                model.setHeaderData(cur_col , 1, col["name"], 0)
+                model.setHeaderData(cur_col, 1, col["name"], 0)
                 cur_col += 1
             self.list_var.append([c, col["name"], cur_col])
 
-        model.itemChanged.connect(self.onTabDataChange)
+        model.itemChanged.connect(self.on_tab_data_change)
         return model
 
-
-    def shortCut_row_del(self):
+    def short_cut_row_del(self):
         if self.ui.tab_sets.hasFocus():
             cols = []
             model = self.ui.tab_sets.model()
@@ -199,7 +190,6 @@ class laws_dialog(QDialog):
                     cols.append(idx.column() - 5)
             cols = list(set(cols))
             self.update_courbe(cols)
-
 
     def fill_tab_laws(self):
         self.filling_tab = True
@@ -233,41 +223,43 @@ class laws_dialog(QDialog):
         if self.param_law['xIsTime']:
             self.rb_sec.click()
 
-
     def import_csv(self):
         nb_col = 7
         first_ligne = True
         if int(qVersion()[0]) < 5:  # qt4
-            listf = QFileDialog.getOpenFileNames(None, 'File Selection', self.mgis.repProject, "File (*.txt *.csv *.met)")
+            listf = QFileDialog.getOpenFileNames(None, 'File Selection', self.mgis.repProject,
+                                                 "File (*.txt *.csv *.met)")
 
         else:  # qt5
-            listf, _ = QFileDialog.getOpenFileNames(None, 'File Selection', self.mgis.repProject, "File (*.txt *.csv *.met)")
+            listf, _ = QFileDialog.getOpenFileNames(None, 'File Selection', self.mgis.repProject,
+                                                    "File (*.txt *.csv *.met)")
 
-        if listf != []:
+        if listf:
             error = False
             self.filling_tab = True
             model = self.create_tab_model()
             r = 0
 
-            filein =open(listf[0],"r")
+            filein = open(listf[0], "r")
             for num_ligne, ligne in enumerate(filein):
                 if ligne[0] != '#':
-                    liste = ligne.replace('\n','').replace('\t',' ').split(";")
+                    liste = ligne.replace('\n', '').replace('\t', ' ').split(";")
                     if len(liste) == nb_col:
                         if first_ligne:
                             val = data_to_float(liste[0])
-                            if val != None:
+                            if val is not None:
                                 typ_time = 'num'
                             else:
                                 val = data_to_date(liste[0])
-                                if val != None:
+                                if val is not None:
                                     typ_time = 'date'
                                     date_ref = val
                                     self.ui.cb_date.setCheckState(2)
                                     date_ref_str = datetime.strftime(date_ref, '%Y-%m-%d %H:%M:%S')
-                                    self.ui.de_date.setDateTime(QDateTime().fromString(date_ref_str, 'yyyy-MM-dd HH:mm:ss'))
+                                    self.ui.de_date.setDateTime(
+                                        QDateTime().fromString(date_ref_str, 'yyyy-MM-dd HH:mm:ss'))
                                 else:
-                                    print ('e1')
+                                    print('e1')
                                     error = True
                                     break
                             first_ligne = False
@@ -298,8 +290,7 @@ class laws_dialog(QDialog):
                 if self.mgis.DEBUG:
                     self.mgis.addInfo("Import failed ({})".format(listf[0]))
 
-
-    def onTabDataChange(self, itm):
+    def on_tab_data_change(self, itm):
         if not self.param_law['xIsTime']:
             return
         if itm.column() < 5:
@@ -400,11 +391,10 @@ class laws_dialog(QDialog):
                 self.ui.tab_sets.scrollTo(idx, 0)
                 # self.update_courbe("all")
 
-        # elif itm.column() > 4:
-        #     if not self.filling_tab:
-        #         idx = itm.index()
-        #         self.update_courbe([idx.column() - 5])
-
+                # elif itm.column() > 4:
+                #     if not self.filling_tab:
+                #         idx = itm.index()
+                #         self.update_courbe([idx.column() - 5])
 
     def update_courbe(self, courbes):
         data = {}
@@ -425,13 +415,12 @@ class laws_dialog(QDialog):
             ly = []
             for r in range(self.ui.tab_sets.model().rowCount()):
                 ly.append(self.ui.tab_sets.model().item(r, crb + 5).data(0))
-            data[crb] = {"x":lx, "y":ly}
+            data[crb] = {"x": lx, "y": ly}
 
         self.graph_edit.majCourbes(data)
 
-
     def new_set(self):
-        #changer de page
+        # changer de page
         self.cur_set = -1
         self.ui.txt_name.setText('')
         date = QDateTime(QDate().currentDate(), QTime(0, 0, 0))
@@ -441,10 +430,9 @@ class laws_dialog(QDialog):
         self.ui.laws_pages.setCurrentIndex(1)
         # self.graph_edit.initGraph(None)
 
-
     def edit_set(self):
-        #charger les informations
-        #changer de page
+        # charger les informations
+        # changer de page
         if self.ui.lst_laws.selectedIndexes():
             l = self.ui.lst_laws.selectedIndexes()[0].row()
             self.cur_law = int(self.ui.lst_laws.model().item(l, 0).text())
@@ -474,21 +462,20 @@ class laws_dialog(QDialog):
             self.ui.laws_pages.setCurrentIndex(1)
             # self.graph_edit.initGraph(self.cur_set)
 
-
     def delete_set(self):
-        #charger les informations
-        #changer de page
+        # charger les informations
+        # changer de page
         if self.ui.lst_laws.selectedIndexes():
             l = self.ui.lst_laws.selectedIndexes()[0].row()
             id_set = self.ui.lst_laws.model().item(l, 0).text()
             name_set = self.ui.lst_laws.model().item(l, 1).text()
-            if (QMessageBox.question(self, "Meteo Settings", "Delete {} ?".format(name_set), QMessageBox.Cancel|QMessageBox.Ok)) == QMessageBox.Ok:
+            if (QMessageBox.question(self, "Meteo Settings", "Delete {} ?".format(name_set),
+                                     QMessageBox.Cancel | QMessageBox.Ok)) == QMessageBox.Ok:
                 if self.mgis.DEBUG:
                     self.mgis.addInfo("Deletion of {} Meteo Setting".format(name_set))
                 self.mdb.execute("DELETE FROM {0}.laws_meteo WHERE id_config = {1}".format(self.mdb.SCHEMA, id_set))
                 self.mdb.execute("DELETE FROM {0}.meteo_config WHERE id = {1}".format(self.mdb.SCHEMA, id_set))
                 self.fill_lst_conf()
-
 
     def new_time(self):
         self.filling_tab = True
@@ -510,7 +497,6 @@ class laws_dialog(QDialog):
         self.filling_tab = False
         self.update_courbe("all")
 
-
     def delete_time(self):
         if self.ui.tab_sets.selectedIndexes():
             rows = [idx.row() for idx in self.ui.tab_sets.selectedIndexes()]
@@ -521,7 +507,6 @@ class laws_dialog(QDialog):
                 model.removeRow(row)
             self.update_courbe("all")
 
-
     def chg_time(self, v):
         unit = ['s', 'min', 'h', 'day', 'date']
         for i in range(5):
@@ -529,15 +514,14 @@ class laws_dialog(QDialog):
                 self.ui.tab_sets.setColumnHidden(i, False)
             else:
                 self.ui.tab_sets.setColumnHidden(i, True)
-        # if not self.filling_tab:
-        #     self.graph_edit.majUnitX(unit[v])
-        #     self.update_courbe("all")
+                # if not self.filling_tab:
+                #     self.graph_edit.majUnitX(unit[v])
+                #     self.update_courbe("all")
 
-
-    def acceptPage2(self):
-        #save Info
+    def accept_page2(self):
+        # save Info
         # modificaito liste page 1
-        #change de page
+        # change de page
         name_set = str(self.ui.txt_name.text())
         if self.ui.cb_date.isChecked():
             date, time = self.ui.de_date.date().toString('yyyy-MM-dd'), self.ui.de_date.time().toString('HH:mm:ss')
@@ -547,62 +531,54 @@ class laws_dialog(QDialog):
         if self.cur_set == -1:
             if self.mgis.DEBUG:
                 self.mgis.addInfo("Addition of {} Meteo Setting".format(name_set))
-            self.mdb.execute("INSERT INTO {0}.meteo_config (name, starttime, active) VALUES ('{1}', {2}, 'f')".format(self.mdb.SCHEMA, name_set, date_set))
+            self.mdb.execute("INSERT INTO {0}.meteo_config (name, starttime, active) VALUES ('{1}', {2}, 'f')".format(
+                self.mdb.SCHEMA, name_set, date_set))
             res = self.mdb.run_query("SELECT Max(id) FROM {0}.meteo_config".format(self.mdb.SCHEMA), fetch=True)
             self.cur_set = res[0][0]
         else:
             if self.mgis.DEBUG:
                 self.mgis.addInfo("Editing of {} Meteo Setting".format(name_set))
-            self.mdb.execute("UPDATE {0}.meteo_config SET name = '{1}', starttime = {2} WHERE id = {3}".format(self.mdb.SCHEMA, name_set, date_set, self.cur_set))
+            self.mdb.execute(
+                "UPDATE {0}.meteo_config SET name = '{1}', starttime = {2} WHERE id = {3}".format(self.mdb.SCHEMA,
+                                                                                                  name_set, date_set,
+                                                                                                  self.cur_set))
             self.mdb.execute("DELETE FROM {0}.laws_meteo WHERE id_config = {1}".format(self.mdb.SCHEMA, self.cur_set))
 
         recs = []
         for r in range(self.ui.tab_sets.model().rowCount()):
             for c in range(5, self.ui.tab_sets.model().columnCount()):
-                recs.append([self.cur_set, self.list_var[c - 5][0], self.ui.tab_sets.model().item(r, 0).data(0), self.ui.tab_sets.model().item(r, c).data(0)])
+                recs.append([self.cur_set, self.list_var[c - 5][0], self.ui.tab_sets.model().item(r, 0).data(0),
+                             self.ui.tab_sets.model().item(r, c).data(0)])
 
-        self.mdb.run_query("INSERT INTO {0}.laws_meteo (id_config, id_var, time, value) VALUES (%s, %s, %s, %s)".format(self.mdb.SCHEMA), many=True, listMany=recs)
+        self.mdb.run_query("INSERT INTO {0}.laws_meteo (id_config, id_var, time, value) VALUES (%s, %s, %s, %s)".format(
+            self.mdb.SCHEMA), many=True, listMany=recs)
 
         self.fill_lst_conf(self.cur_set)
         self.ui.laws_pages.setCurrentIndex(0)
         self.graph_edit.initGraph(None, all_vis=True)
 
-
-    def rejectPage2(self):
+    def reject_page2(self):
         if self.mgis.DEBUG:
             self.mgis.addInfo("Cancel of Meteo Setting")
         self.ui.laws_pages.setCurrentIndex(0)
         # self.graph_edit.initGraph(None, all_vis=True)
 
-def data_to_float(txt):
-    try:
-        float(txt)
-        return float(txt)
-    except ValueError:
-        return None
-
-def data_to_date(txt):
-    try:
-        dateutil.parser.parse(txt, dayfirst=True)
-        return dateutil.parser.parse(txt, dayfirst=True)
-    except ValueError:
-        return None
 
 class ItemEditorFactory(QItemEditorFactory):
     def __init__(self):
         QItemEditorFactory.__init__(self)
 
-    def createEditor(self, userType, parent):
+    def createEditor(self, user_type, parent):
         # print (userType)
         if userType == QVariant.Double or userType == 0:
-            doubleSpinBox = QDoubleSpinBox(parent)
-            doubleSpinBox.setDecimals(10)
-            doubleSpinBox.setMinimum(-1000000000.)  # The default maximum value is 99.99.
-            doubleSpinBox.setMaximum(1000000000.)  # The default maximum value is 99.99.
-            return doubleSpinBox
+            double_spin_box = QDoubleSpinBox(parent)
+            double_spin_box.setDecimals(10)
+            double_spin_box.setMinimum(-1000000000.)  # The default maximum value is 99.99.
+            double_spin_box.setMaximum(1000000000.)  # The default maximum value is 99.99.
+            return double_spin_box
         elif userType == 16:
-            dateTimeEdit = QDateTimeEdit(parent)
-            dateTimeEdit.setDisplayFormat("dd/MM/yyyy HH:mm:ss")
-            return dateTimeEdit
+            date_time_edit = QDateTimeEdit(parent)
+            date_time_edit.setDisplayFormat("dd/MM/yyyy HH:mm:ss")
+            return date_time_edit
         else:
             return ItemEditorFactory.createEditor(userType, parent)
