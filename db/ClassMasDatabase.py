@@ -1020,12 +1020,53 @@ $BODY$
 
         tables = [Maso.laws_config, Maso.laws_hyd]
         tables.sort(key=lambda x: x().order)
+        liste_tab_exist=self.list_tables(self.SCHEMA)
+        
+        #TODO debug
+        # liste_tab_exist=['laws']
+        # for masobj_class in tables:
+        #     try:
+        #         if masobj_class.__name__ not in liste_tab_exist:
+        #             obj = self.process_masobject(masobj_class, 'pg_create_table')
+        #             if self.mgis.DEBUG:
+        #                 self.mgis.add_info('  {0} OK'.format(obj.name))
+        #         else:
+        #             if self.mgis.DEBUG:
+        #                 self.mgis.add_info('  {0} already exists'.format(obj.name))
+        #     except:
+        #         self.mgis.add_info('failure!<br>{0}'.format(masobj_class))
+        # if 'laws' in liste_tab_exist:
+        #
+        #     dico_law=self.select('laws')
+        #     liste_col = self.list_columns('laws_config')
+        #     liste_col=liste_col[1:]
+        #     var = ",".join(liste_col)
+        #     valeurs=''
+        #     for k in liste_col:
+        #         valeurs += '%s,'
+        #     valeurs = valeurs[:-1]
+        #
+        #
+        #     liste_value = zip(dico_law[liste_col[0]],dico_law[liste_col[1]],dico_law[liste_col[2]], dico_law[liste_col[3]])
+        #     print(liste_value)
+        #
+        #     sql = "INSERT INTO {0}.{1}({2}) VALUES ({3}); \n".format(self.SCHEMA,
+        #                                                         'laws_config',
+        #                                                         var,
+        #                                                         valeurs)
+        #     self.run_query(sql, many=True, list_many=liste_value)
+        #
+        #
+        #     sql = "SELECT DISTINCT id FROM {0}.{1} WHERE 'name' = {2}  ;"
+        #
+        #
+        #     (results, namCol) = self.run_query(sql.format(self.SCHEMA, 'laws_config', name) )
+        #
+        #     # sql+="INSERT INTO {0}.{1}({2}) VALUES ({3}); \n".format(self.SCHEMA,
+        #     #                                                     'laws_config',
+        #     #                                                     var,
+        #     #                                                     valeurs)
+        #     print(sql)
 
-        for masobj_class in tables:
-            try:
-                obj = self.process_masobject(masobj_class, 'pg_create_table')
-                if self.mgis.DEBUG:
-                    self.mgis.add_info('  {0} OK'.format(obj.name))
-            except:
-                self.mgis.add_info('failure!<br>{0}'.format(masobj_class))
+
         pass

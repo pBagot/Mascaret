@@ -156,7 +156,6 @@ class MascPlugDialog(QMainWindow):
         self.ui.actionExport_Run.triggered.connect(self.export_run)
         self.ui.actionExport_Model.triggered.connect(self.export_model)
         self.ui.actionImport_Model.triggered.connect(self.import_model)
-        # TODO
         self.ui.actionParameters_Water_Quality.triggered.connect(self.fct_parameters_wq)
         self.ui.actionTracer_Laws.triggered.connect(self.fct_tracer_laws)
         self.ui.actionAbout.triggered.connect(self.about)
@@ -170,6 +169,7 @@ class MascPlugDialog(QMainWindow):
         # test APN
         self.ui.actionTest_Law.triggered.connect(self.import_law)
         self.ui.actionTest_Obs.triggered.connect(self.import_obs)
+        self.ui.actionHydraulic_laws_tables.triggered.connect(self.fct_udpate_laws)
 
     def add_info(self, text):
 
@@ -770,4 +770,4 @@ Version : {}
         ok = self.box.yes_no_q('Do you want update law tables ? \n '
                                'WARNING: if the tables exist then it will be emptied.')
         if ok:
-            self.mdb.add_laws_hyd(self.dossierSQL)
+            self.mdb.add_laws_hyd()

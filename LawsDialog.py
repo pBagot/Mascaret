@@ -35,7 +35,7 @@ else:  # qt5
     from qgis.PyQt.QtGui import QStandardItemModel, QStandardItem, QKeySequence
     from qgis.PyQt.QtWidgets import *
 
-
+#TODO decorreler le nomde la loi et le nom de l'extremite
 dico_typ_law = {1: {'name': 'Hydrograph Q(t)',
                     'var': [{'name': 'time', 'leg': 'time', 'unit': 's'},
                             {'name': 'flowrate', 'leg': 'Q', 'unit': 'm3/s'}],
@@ -569,16 +569,16 @@ class ItemEditorFactory(QItemEditorFactory):
         QItemEditorFactory.__init__(self)
 
     def createEditor(self, user_type, parent):
-        # print (userType)
-        if userType == QVariant.Double or userType == 0:
+        # print (user_type)
+        if user_type == QVariant.Double or user_type == 0:
             double_spin_box = QDoubleSpinBox(parent)
             double_spin_box.setDecimals(10)
             double_spin_box.setMinimum(-1000000000.)  # The default maximum value is 99.99.
             double_spin_box.setMaximum(1000000000.)  # The default maximum value is 99.99.
             return double_spin_box
-        elif userType == 16:
+        elif user_type == 16:
             date_time_edit = QDateTimeEdit(parent)
             date_time_edit.setDisplayFormat("dd/MM/yyyy HH:mm:ss")
             return date_time_edit
         else:
-            return ItemEditorFactory.createEditor(userType, parent)
+            return ItemEditorFactory.createEditor(user_type, parent)
