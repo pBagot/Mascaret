@@ -54,7 +54,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QgsProjectionSelectionWidget" name="crsWidget" native="true">
+       <widget class="QgsProjectionSelectionWidget" name="crsWidget">
         <property name="minimumSize">
          <size>
           <width>300</width>
@@ -216,6 +216,7 @@
       <string>Update Table</string>
      </property>
      <addaction name="actionAdd_WQ_tables"/>
+     <addaction name="actionHydraulic_laws_tables"/>
     </widget>
     <addaction name="actionRefresh_Database"/>
     <addaction name="separator"/>
@@ -619,6 +620,11 @@
    </property>
    <property name="toolTip">
     <string>Test Obs</string>
+   </property>
+  </action>
+  <action name="actionHydraulic_laws_tables">
+   <property name="text">
+    <string>Hydraulic laws tables</string>
    </property>
   </action>
  </widget>
