@@ -134,7 +134,7 @@ class ClassLawsDialog(QDialog):
                     self.ui.lst_laws.setCurrentIndex(self.ui.lst_laws.model().item(r, 1).index())
                     break
         else:
-            self.displayGraphHome()
+            self.display_graph_home()
 
     def change_date_start(self):
         date, time = self.ui.de_start.date().toString('dd-MM-yyyy'), self.ui.de_start.time().toString('HH:mm:ss')
