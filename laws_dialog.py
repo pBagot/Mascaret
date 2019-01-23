@@ -37,7 +37,7 @@ from qgis.core import *
 from qgis.utils import *
 from qgis.gui import *
 
-# from .graph_WQ import GraphMeteo
+from .graph_laws import GraphLaw
 # from .table_WQ import table_WQ
 
 dico_typ_law = {1: {'name': 'Hydrograph Q(t)',
@@ -98,17 +98,19 @@ class laws_dialog(QDialog):
 
 
     def displayGraphHome(self):
-        return
         if self.ui.lst_laws.selectedIndexes():
             l = self.ui.lst_laws.selectedIndexes()[0].row()
             id_law = int(self.ui.lst_laws.model().item(l, 0).text())
+            typ_law = int(self.ui.lst_laws.model().item(l, 4).text())
+            print (typ_law, id_law)
+            self.graph_home.initCurv(typ_law)
             self.graph_home.initGraph(id_law)
         else:
-            self.graph_home.initGraph(None)
+            self.graph_home.initCurv(None)
 
     def initUI(self):
         self.ui.laws_pages.setCurrentIndex(0)
-        # self.graph_home = GraphMeteo(self.mgis, self.ui.lay_graph_home, self.dico_var)
+        self.graph_home = GraphLaw(self.mgis, self.ui.lay_graph_home)
         # self.graph_edit = GraphMeteo(self.mgis, self.ui.lay_graph_edit, self.dico_var)
         self.fill_lst_law()
 
@@ -129,13 +131,13 @@ class laws_dialog(QDialog):
                 new_itm.setEditable(False)
                 self.ui.lst_laws.model().setItem(i, j, new_itm)
 
-        # if id:
-        #     for r in range(self.ui.lst_laws.model().rowCount()):
-        #         if str(self.ui.lst_laws.model().item(r, 0).text()) == str(id):
-        #             self.ui.lst_laws.setCurrentIndex(self.ui.lst_laws.model().item(r, 1).index())
-        #             break
-        # else:
-        #     self.displayGraphHome()
+        if id:
+            for r in range(self.ui.lst_laws.model().rowCount()):
+                if str(self.ui.lst_laws.model().item(r, 0).text()) == str(id):
+                    self.ui.lst_laws.setCurrentIndex(self.ui.lst_laws.model().item(r, 1).index())
+                    break
+        else:
+            self.displayGraphHome()
 
 
     def change_date_start(self):
@@ -152,7 +154,8 @@ class laws_dialog(QDialog):
                         date_itm.setEditable(True)
                         model.setItem(r, 4, date_itm)
                     date = self.date_start + timedelta(seconds=model.item(r, 0).data(0))
-                    model.item(r, 4).setData(QDateTime(date), 0)
+                    model.item(r, 4).setData(date.strftime('%d-%m-%Y %H:%M:%S'), 0)
+                #     model.item(r, 4).setData(QDateTime(date), 0)
                 # if self.bg_time.checkedId() == 4:
                 #     self.update_courbe("all")
 
@@ -318,10 +321,11 @@ class laws_dialog(QDialog):
                     model.item(itm.row(), 3).setData(itm.data(0) / 86400., 0)
                     if not model.item(itm.row(), 4):
                         date_itm = QStandardItem()
-                        date_itm.setEditable(True)
+                        date_itm.setEditable(False)
                         model.setItem(itm.row(), 4, date_itm)
                     date = self.date_start + timedelta(seconds=itm.data(0))
-                    model.item(itm.row(), 4).setData(QDateTime(date), 0)
+                    # model.item(itm.row(), 4).setData(QDateTime(date), 0)
+                    model.item(itm.row(), 4).setData(date.strftime('%d-%m-%Y %H:%M:%S'), 0)
                     model.blockSignals(False)
                 elif itm.column() == 1:
                     model.blockSignals(True)
@@ -336,10 +340,11 @@ class laws_dialog(QDialog):
                     model.item(itm.row(), 3).setData(itm.data(0) / 1440., 0)
                     if not model.item(itm.row(), 4):
                         date_itm = QStandardItem()
-                        date_itm.setEditable(True)
+                        date_itm.setEditable(False)
                         model.setItem(itm.row(), 4, date_itm)
                     date = self.date_start + timedelta(minutes=itm.data(0))
-                    model.item(itm.row(), 4).setData(QDateTime(date), 0)
+                    # model.item(itm.row(), 4).setData(QDateTime(date), 0)
+                    model.item(itm.row(), 4).setData(date.strftime('%d-%m-%Y %H:%M:%S'), 0)
                     model.blockSignals(False)
                 elif itm.column() == 2:
                     model.blockSignals(True)
@@ -354,10 +359,11 @@ class laws_dialog(QDialog):
                     model.item(itm.row(), 3).setData(itm.data(0) / 24., 0)
                     if not model.item(itm.row(), 4):
                         date_itm = QStandardItem()
-                        date_itm.setEditable(True)
+                        date_itm.setEditable(False)
                         model.setItem(itm.row(), 4, date_itm)
                     date = self.date_start + timedelta(hours=itm.data(0))
-                    model.item(itm.row(), 4).setData(QDateTime(date), 0)
+                    # model.item(itm.row(), 4).setData(QDateTime(date), 0)
+                    model.item(itm.row(), 4).setData(date.strftime('%d-%m-%Y %H:%M:%S'), 0)
                     model.blockSignals(False)
                 elif itm.column() == 3:
                     model.blockSignals(True)
@@ -372,27 +378,28 @@ class laws_dialog(QDialog):
                     model.item(itm.row(), 2).setData(itm.data(0) * 24., 0)
                     if not model.item(itm.row(), 4):
                         date_itm = QStandardItem()
-                        date_itm.setEditable(True)
+                        date_itm.setEditable(False)
                         model.setItem(itm.row(), 4, date_itm)
                     date = self.date_start + timedelta(days=itm.data(0))
-                    model.item(itm.row(), 4).setData(QDateTime(date), 0)
+                    # model.item(itm.row(), 4).setData(QDateTime(date), 0)
+                    model.item(itm.row(), 4).setData(date.strftime('%d-%m-%Y %H:%M:%S'), 0)
                     model.blockSignals(False)
-                elif itm.column() == 4:
-                    model.blockSignals(True)
-                    time_sec = -itm.data(0).secsTo(self.ui.de_start.dateTime())
-                    if not model.item(itm.row(), 0):
-                        model.setItem(itm.row(), 0, QStandardItem())
-                    model.item(itm.row(), 0).setData(time_sec, 0)
-                    if not model.item(itm.row(), 1):
-                        model.setItem(itm.row(), 1, QStandardItem())
-                    model.item(itm.row(), 1).setData(time_sec / 60., 0)
-                    if not model.item(itm.row(), 2):
-                        model.setItem(itm.row(), 2, QStandardItem())
-                    model.item(itm.row(), 2).setData(time_sec / 3600., 0)
-                    if not model.item(itm.row(), 3):
-                        model.setItem(itm.row(), 3, QStandardItem())
-                    model.item(itm.row(), 3).setData(time_sec / 86400., 0)
-                    model.blockSignals(False)
+                # elif itm.column() == 4:
+                #     model.blockSignals(True)
+                #     time_sec = -itm.data(0).secsTo(self.ui.de_start.dateTime())
+                #     if not model.item(itm.row(), 0):
+                #         model.setItem(itm.row(), 0, QStandardItem())
+                #     model.item(itm.row(), 0).setData(time_sec, 0)
+                #     if not model.item(itm.row(), 1):
+                #         model.setItem(itm.row(), 1, QStandardItem())
+                #     model.item(itm.row(), 1).setData(time_sec / 60., 0)
+                #     if not model.item(itm.row(), 2):
+                #         model.setItem(itm.row(), 2, QStandardItem())
+                #     model.item(itm.row(), 2).setData(time_sec / 3600., 0)
+                #     if not model.item(itm.row(), 3):
+                #         model.setItem(itm.row(), 3, QStandardItem())
+                #     model.item(itm.row(), 3).setData(time_sec / 86400., 0)
+                #     model.blockSignals(False)
 
             if not self.filling_tab:
                 model.sort(0)
