@@ -1,5 +1,5 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
-<qgis version="2.18.13" simplifyAlgorithm="0" minimumScale="0" maximumScale="1e+08" simplifyDrawingHints="0" minLabelScale="0" maxLabelScale="1e+08" simplifyDrawingTol="1" readOnly="0" simplifyMaxScale="1" hasScaleBasedVisibilityFlag="0" simplifyLocal="1" scaleBasedLabelVisibilityFlag="0">
+<qgis version="2.16.3" simplifyAlgorithm="0" minimumScale="100000" maximumScale="200000" simplifyDrawingHints="0" minLabelScale="0" maxLabelScale="1e+08" simplifyDrawingTol="1" simplifyMaxScale="1" hasScaleBasedVisibilityFlag="0" simplifyLocal="1" scaleBasedLabelVisibilityFlag="0">
   <edittypes>
     <edittype widgetv2type="TextEdit" name="gid">
       <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
@@ -7,44 +7,86 @@
     <edittype widgetv2type="TextEdit" name="name">
       <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
     </edittype>
-    <edittype widgetv2type="TextEdit" name="profile">
+    <edittype widgetv2type="TextEdit" name="basinnum">
       <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
     </edittype>
-    <edittype widgetv2type="TextEdit" name="order_">
+    <edittype widgetv2type="TextEdit" name="initlevel">
       <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
     </edittype>
-    <edittype widgetv2type="TextEdit" name="x">
+    <edittype widgetv2type="TextEdit" name="level">
       <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
     </edittype>
-    <edittype widgetv2type="TextEdit" name="z">
+    <edittype widgetv2type="TextEdit" name="area">
       <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+    </edittype>
+    <edittype widgetv2type="TextEdit" name="volume">
+      <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+    </edittype>
+    <edittype widgetv2type="CheckBox" name="active">
+      <widgetv2config fieldEditable="1" UncheckedState="f" constraint="" CheckedState="t" labelOnTop="0" constraintDescription="" notNull="0"/>
     </edittype>
   </edittypes>
-  <renderer-v2 forceraster="0" symbollevels="0" type="singleSymbol" enableorderby="0">
+  <renderer-v2 attr="active" forceraster="0" symbollevels="0" type="categorizedSymbol" enableorderby="0">
+    <categories>
+      <category render="true" symbol="0" value="t" label="Active"/>
+      <category render="true" symbol="1" value="f" label="Inactive"/>
+    </categories>
     <symbols>
-      <symbol alpha="1" clip_to_extent="1" type="marker" name="0">
-        <layer pass="0" class="SimpleMarker" locked="0">
-          <prop k="angle" v="0"/>
-          <prop k="color" v="253,191,111,255"/>
-          <prop k="horizontal_anchor_point" v="1"/>
+      <symbol alpha="1" clip_to_extent="1" type="fill" name="0">
+        <layer pass="0" class="SimpleFill" locked="0">
+          <prop k="border_width_map_unit_scale" v="0,0,0,0,0,0"/>
+          <prop k="color" v="51,172,208,255"/>
           <prop k="joinstyle" v="bevel"/>
-          <prop k="name" v="circle"/>
           <prop k="offset" v="0,0"/>
           <prop k="offset_map_unit_scale" v="0,0,0,0,0,0"/>
           <prop k="offset_unit" v="MM"/>
           <prop k="outline_color" v="0,0,0,255"/>
           <prop k="outline_style" v="solid"/>
-          <prop k="outline_width" v="0"/>
-          <prop k="outline_width_map_unit_scale" v="0,0,0,0,0,0"/>
+          <prop k="outline_width" v="0.26"/>
           <prop k="outline_width_unit" v="MM"/>
-          <prop k="scale_method" v="diameter"/>
-          <prop k="size" v="2"/>
-          <prop k="size_map_unit_scale" v="0,0,0,0,0,0"/>
-          <prop k="size_unit" v="MM"/>
-          <prop k="vertical_anchor_point" v="1"/>
+          <prop k="style" v="solid"/>
+        </layer>
+      </symbol>
+      <symbol alpha="1" clip_to_extent="1" type="fill" name="1">
+        <layer pass="0" class="SimpleFill" locked="0">
+          <prop k="border_width_map_unit_scale" v="0,0,0,0,0,0"/>
+          <prop k="color" v="0,0,0,255"/>
+          <prop k="joinstyle" v="bevel"/>
+          <prop k="offset" v="0,0"/>
+          <prop k="offset_map_unit_scale" v="0,0,0,0,0,0"/>
+          <prop k="offset_unit" v="MM"/>
+          <prop k="outline_color" v="0,0,0,255"/>
+          <prop k="outline_style" v="solid"/>
+          <prop k="outline_width" v="0.26"/>
+          <prop k="outline_width_unit" v="MM"/>
+          <prop k="style" v="solid"/>
         </layer>
       </symbol>
     </symbols>
+    <source-symbol>
+      <symbol alpha="1" clip_to_extent="1" type="fill" name="0">
+        <layer pass="0" class="SimpleFill" locked="0">
+          <prop k="border_width_map_unit_scale" v="0,0,0,0,0,0"/>
+          <prop k="color" v="152,81,14,255"/>
+          <prop k="joinstyle" v="bevel"/>
+          <prop k="offset" v="0,0"/>
+          <prop k="offset_map_unit_scale" v="0,0,0,0,0,0"/>
+          <prop k="offset_unit" v="MM"/>
+          <prop k="outline_color" v="0,0,0,255"/>
+          <prop k="outline_style" v="solid"/>
+          <prop k="outline_width" v="0.26"/>
+          <prop k="outline_width_unit" v="MM"/>
+          <prop k="style" v="solid"/>
+        </layer>
+      </symbol>
+    </source-symbol>
+    <colorramp type="gradient" name="[source]">
+      <prop k="color1" v="255,255,204,255"/>
+      <prop k="color2" v="37,52,148,255"/>
+      <prop k="discrete" v="0"/>
+      <prop k="stops" v="0.25;161,218,180,255:0.5;65,182,196,255:0.75;44,127,184,255"/>
+    </colorramp>
+    <invertedcolorramp value="0"/>
     <rotation/>
     <sizescale scalemethod="diameter"/>
   </renderer-v2>
@@ -78,9 +120,9 @@
     <property key="labeling/distMapUnitMaxScale" value="0"/>
     <property key="labeling/distMapUnitMinScale" value="0"/>
     <property key="labeling/distMapUnitScale" value="0,0,0,0,0,0"/>
-    <property key="labeling/drawLabels" value="false"/>
-    <property key="labeling/enabled" value="false"/>
-    <property key="labeling/fieldName" value=""/>
+    <property key="labeling/drawLabels" value="true"/>
+    <property key="labeling/enabled" value="true"/>
+    <property key="labeling/fieldName" value="name"/>
     <property key="labeling/fitInPolygonOnly" value="false"/>
     <property key="labeling/fontBold" value="false"/>
     <property key="labeling/fontCapitals" value="0"/>
@@ -100,7 +142,7 @@
     <property key="labeling/fontWeight" value="50"/>
     <property key="labeling/fontWordSpacing" value="0"/>
     <property key="labeling/formatNumbers" value="false"/>
-    <property key="labeling/isExpression" value="true"/>
+    <property key="labeling/isExpression" value="false"/>
     <property key="labeling/labelOffsetInMapUnits" value="true"/>
     <property key="labeling/labelOffsetMapUnitMaxScale" value="0"/>
     <property key="labeling/labelOffsetMapUnitMinScale" value="0"/>
@@ -200,25 +242,23 @@
     <property key="labeling/shapeSizeY" value="0"/>
     <property key="labeling/shapeTransparency" value="0"/>
     <property key="labeling/shapeType" value="0"/>
-    <property key="labeling/substitutions" value="&lt;substitutions/>"/>
     <property key="labeling/textColorA" value="255"/>
     <property key="labeling/textColorB" value="0"/>
     <property key="labeling/textColorG" value="0"/>
     <property key="labeling/textColorR" value="0"/>
     <property key="labeling/textTransp" value="0"/>
     <property key="labeling/upsidedownLabels" value="0"/>
-    <property key="labeling/useSubstitutions" value="false"/>
     <property key="labeling/wrapChar" value=""/>
     <property key="labeling/xOffset" value="0"/>
     <property key="labeling/yOffset" value="0"/>
     <property key="labeling/zIndex" value="0"/>
-    <property key="variableNames"/>
-    <property key="variableValues"/>
+    <property key="variableNames" value="_fields_"/>
+    <property key="variableValues" value=""/>
   </customproperties>
   <blendMode>0</blendMode>
   <featureBlendMode>0</featureBlendMode>
   <layerTransparency>0</layerTransparency>
-  <displayfield>gid</displayfield>
+  <displayfield>branch</displayfield>
   <label>0</label>
   <labelattributes>
     <label fieldname="" text="Label"/>
@@ -241,8 +281,9 @@
     <selectedonly on=""/>
   </labelattributes>
   <SingleCategoryDiagramRenderer diagramType="Histogram" sizeLegend="0" attributeLegend="1">
-    <DiagramCategory penColor="#000000" labelPlacementMethod="XHeight" penWidth="0" diagramOrientation="Up" sizeScale="0,0,0,0,0,0" minimumSize="0" barWidth="5" penAlpha="255" maxScaleDenominator="1e+08" backgroundColor="#ffffff" transparency="0" width="15" scaleDependency="Area" backgroundAlpha="255" angleOffset="1440" scaleBasedVisibility="0" enabled="0" height="15" lineSizeScale="0,0,0,0,0,0" sizeType="MM" lineSizeType="MM" minScaleDenominator="inf">
+    <DiagramCategory penColor="#000000" labelPlacementMethod="XHeight" penWidth="0" diagramOrientation="Up" sizeScale="0,0,0,0,0,0" minimumSize="0" barWidth="5" penAlpha="255" maxScaleDenominator="200000" backgroundColor="#ffffff" transparency="0" width="15" scaleDependency="Area" backgroundAlpha="255" angleOffset="1440" scaleBasedVisibility="1" enabled="0" height="15" lineSizeScale="0,0,0,0,0,0" sizeType="MM" lineSizeType="MM" minScaleDenominator="100000">
       <fontProperties description="MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0" style=""/>
+      <attribute field="" color="#000000" label=""/>
     </DiagramCategory>
     <symbol alpha="1" clip_to_extent="1" type="marker" name="sizeSymbol">
       <layer pass="0" class="SimpleMarker" locked="0">
@@ -268,65 +309,77 @@
     </symbol>
   </SingleCategoryDiagramRenderer>
   <DiagramLayerSettings yPosColumn="-1" showColumn="-1" linePlacementFlags="10" placement="0" dist="0" xPosColumn="-1" priority="0" obstacle="0" zIndex="0" showAll="1"/>
-  <annotationform>.</annotationform>
+  <annotationform>PROGRA~2/QGIS_2.6/profil/python/plugins/MascPlug/mascaret</annotationform>
   <aliases>
-    <alias field="gid" index="0" name=""/>
-    <alias field="name" index="1" name=""/>
-    <alias field="profile" index="2" name=""/>
-    <alias field="order_" index="3" name="order"/>
-    <alias field="x" index="4" name="distance"/>
-    <alias field="z" index="5" name=""/>
+    <alias field="active" index="7" name="Active"/>
+    <alias field="area" index="5" name="Area (m2)"/>
+    <alias field="basinnum" index="2" name="Basin number"/>
+    <alias field="initlevel" index="3" name="Reference level (m)"/>
+    <alias field="level" index="4" name="Level (m)"/>
+    <alias field="name" index="1" name="Name"/>
+    <alias field="volume" index="6" name="Volume (m3)"/>
   </aliases>
   <excludeAttributesWMS/>
   <excludeAttributesWFS/>
-  <attributeactions default="-1"/>
-  <attributetableconfig actionWidgetStyle="dropDown" sortExpression="" sortOrder="0">
+  <attributeactions default="0">
+    <actionsetting showInAttributeTable="0" action="from qgis.utils import iface&#xd;&#xa;from qgis.gui import QgsMessageBar&#xd;&#xa;import processing&#xd;&#xa;&#xd;&#xa;# Initialisation des parametres pour le calcul des courbes hypsometriques&#xd;&#xa;nom_MNT = 'DEM_basins' #couche raster MNT&#xd;&#xa;nom_casiers = 'basins' # couche vectorielle des casiers&#xd;&#xa;delta_z = 1 # loi surface volume tous les metres&#xd;&#xa;sortie = None # fichiers resultats dans repertoire users/Appdata/Local/temp&#xd;&#xa;&#xd;&#xa;# couches Qgis&#xd;&#xa;existence_couches = True&#xd;&#xa;try:&#xd;&#xa;&#x9;couche_MNT = QgsMapLayerRegistry.instance().mapLayersByName(nom_MNT)[0]&#xd;&#xa;except:&#xd;&#xa;&#x9;#print('DEM pas trouvé')&#xd;&#xa;&#x9;iface.messageBar().pushMessage('','no DEM_basins layer found', QgsMessageBar.WARNING, 3)&#xd;&#xa;&#x9;existence_couches = False&#xd;&#xa;&#xd;&#xa;try:&#xd;&#xa;&#x9;couche_basins = QgsMapLayerRegistry.instance().mapLayersByName(nom_casiers)[0]&#xd;&#xa;except:&#xd;&#xa;&#x9;#print('basins pas trouvé')&#xd;&#xa;&#x9;iface.messageBar().pushMessage('','no basins layer found', QgsMessageBar.WARNING, 3)&#xd;&#xa;&#x9;existence_couches = False&#xd;&#xa;&#xd;&#xa;# Generation de la loi surface volume&#xd;&#xa;if existence_couches:&#xd;&#xa;&#x9;# Execution de l'algorithme QGis de courbes hypsometriques &#xd;&#xa;&#x9;resultat = processing.runalg(&quot;qgis:hypsometriccurves&quot;,nom_MNT,nom_casiers,delta_z,False,sortie)&#xd;&#xa;&#x9;resultat_chemin = resultat['OUTPUT_DIRECTORY']&#xd;&#xa;&#x9;#print(resultat_chemin)&#xd;&#xa;&#x9;&#xd;&#xa;&#x9;# Traitement des casiers selectionnes&#xd;&#xa;&#x9;features = couche_basins.selectedFeatures()&#xd;&#xa;&#x9;if features == []:&#xd;&#xa;&#x9;&#x9;iface.messageBar().pushMessage('','no selected features in basins layer', QgsMessageBar.WARNING, 3)&#xd;&#xa;&#x9;else:&#xd;&#xa;&#x9;&#x9;couche_basins.startEditing()&#xd;&#xa;&#x9;&#x9;for feature in features:&#xd;&#xa;&#x9;&#x9;&#x9;id = feature.id() # gid du casier&#xd;&#xa;&#x9;&#x9;&#x9;nom_fichier = 'hystogram_basins_'+str(id)+'.csv'&#xd;&#xa;&#x9;&#x9;&#x9;chemin_fichier = resultat_chemin+'\\'+nom_fichier&#xd;&#xa;&#x9;&#x9;&#x9;lignes = []&#xd;&#xa;&#x9;&#x9;&#x9;try:&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;fichier = open(chemin_fichier,'r')&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;fichier.readline() # entete&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;lignes = fichier.readlines() # lignes surface, elevation&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;fichier.close()&#xd;&#xa;&#x9;&#x9;&#x9;except IOError:&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;#print('no DEM found for Basin gid:'+str(id))&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;iface.messageBar().pushMessage('','no DEM found for Basin gid:'+str(id), QgsMessageBar.WARNING, 3)&#xd;&#xa;&#x9;&#x9;&#xd;&#xa;&#x9;&#x9;&#x9;# Calcul du volume&#xd;&#xa;&#x9;&#x9;&#x9;if lignes &lt;>[]:&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;# initialisation&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;volume = 0&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;delta_z = 1.0 # metre&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;surface_inf = 0&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;surface_sup = 0&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;liste_Z =[]&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;liste_S = []&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;liste_V = []&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;index = 0&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;z = 0&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;# Traitement&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;for ligne in lignes:&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;chaine = ligne.split(',')&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;surface_inf = surface_sup&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;surface_sup = float(chaine[0])&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;if index ==0:&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;z = float(chaine[1])&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;volume = 0&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;else:&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;z += delta_z&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;# Ajout du volume elementaire calcule sur la surface moyenne&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;volume += delta_z*(surface_sup+surface_inf)/2&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;# Listes pour la loi surface-volume&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;liste_Z.append(&quot;%0.2f&quot; %z)&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;liste_S.append(&quot;%0.0f&quot; %surface_sup)&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;liste_V.append(&quot;%0.0f&quot; %volume)&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;#print(liste_Z)&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;#print(liste_S)&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;#print(liste_V)&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;index +=1&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;# Ecriture de la loi surface-volume&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;feature['level']=' '.join(liste_Z)&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;feature['area']=' '.join(liste_S)&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;feature['volume']=' '.join(liste_V)&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;couche_basins.updateFeature(feature)&#xd;&#xa;&#x9;&#xd;&#xa;&#x9;&#x9;# Commit et fin de l'edition&#xd;&#xa;&#x9;&#x9;couche_basins.commitChanges()&#xd;&#xa;&#x9;&#x9;#print('loi surface volume calculee')&#xd;&#xa;&#x9;&#x9;iface.messageBar().pushMessage('','water storage relationship generated', QgsMessageBar.SUCCESS, 3)&#xd;&#xa;&#xd;&#xa;&#xd;&#xa;&#x9;&#x9;&#xd;&#xa;" icon="" capture="0" type="1" name="Generate water storage relationship" shortTitle=""/>
+  </attributeactions>
+  <attributetableconfig actionWidgetStyle="dropDown" sortExpression="COALESCE(&quot;branch&quot;, '&lt;NULL>')" sortOrder="0">
     <columns>
-      <column width="-1" hidden="0" type="field" name="gid"/>
+      <column width="337" hidden="0" type="field" name="gid"/>
       <column width="-1" hidden="0" type="field" name="name"/>
-      <column width="-1" hidden="0" type="field" name="profile"/>
-      <column width="-1" hidden="0" type="field" name="order_"/>
-      <column width="-1" hidden="0" type="field" name="x"/>
-      <column width="-1" hidden="0" type="field" name="z"/>
+      <column width="-1" hidden="0" type="field" name="basinnum"/>
+      <column width="-1" hidden="0" type="field" name="initlevel"/>
+      <column width="27" hidden="0" type="field" name="level"/>
+      <column width="27" hidden="0" type="field" name="area"/>
+      <column width="1323" hidden="0" type="field" name="volume"/>
+      <column width="-1" hidden="0" type="field" name="active"/>
       <column width="-1" hidden="1" type="actions"/>
     </columns>
   </attributetableconfig>
-  <editform>.</editform>
+  <editform>PROGRA~2/QGIS_2.6/profil/python/plugins/MascPlug/mascaret</editform>
   <editforminit/>
   <editforminitcodesource>0</editforminitcodesource>
-  <editforminitfilepath></editforminitfilepath>
+  <editforminitfilepath>../../../Program Files/QGIS/bin</editforminitfilepath>
   <editforminitcode><![CDATA[# -*- coding: utf-8 -*-
 """
-QGIS forms can have a Python function that is called when the form is
-opened.
+Les formulaires QGIS peuvent avoir une fonction Python qui sera appelée à l'ouverture du formulaire.
 
-Use this function to add extra logic to your forms.
+Utilisez cette fonction pour ajouter plus de fonctionnalités à vos formulaires.
 
-Enter the name of the function in the "Python Init function"
-field.
-An example follows:
+Entrez le nom de la fonction dans le champ "Fonction d'initialisation Python".
+Voici un exemple à suivre:
 """
 from qgis.PyQt.QtWidgets import QWidget
 
 def my_form_open(dialog, layer, feature):
-	geom = feature.geometry()
-	control = dialog.findChild(QWidget, "MyLineEdit")
+    geom = feature.geometry()
+    control = dialog.findChild(QWidget, "MyLineEdit")
+
 ]]></editforminitcode>
   <featformsuppress>0</featformsuppress>
-  <editorlayout>generatedlayout</editorlayout>
-  <widgets/>
+  <editorlayout>tablayout</editorlayout>
+  <attributeEditorForm>
+    <attributeEditorContainer name="Basin" groupBox="0" columnCount="1">
+      <attributeEditorField index="1" name="name"/>
+      <attributeEditorField index="2" name="basinnum"/>
+      <attributeEditorField index="3" name="initlevel"/>
+      <attributeEditorField index="7" name="active"/>
+      <attributeEditorContainer name="Water storage relationship" groupBox="1" columnCount="1">
+        <attributeEditorField index="4" name="level"/>
+        <attributeEditorField index="5" name="area"/>
+        <attributeEditorField index="6" name="volume"/>
+      </attributeEditorContainer>
+    </attributeEditorContainer>
+  </attributeEditorForm>
+  <widgets>
+    <widget name="R_basin_link">
+      <config/>
+    </widget>
+  </widgets>
   <conditionalstyles>
     <rowstyles/>
     <fieldstyles/>
   </conditionalstyles>
-  <defaults>
-    <default field="gid" expression=""/>
-    <default field="name" expression=""/>
-    <default field="profile" expression=""/>
-    <default field="order_" expression=""/>
-    <default field="x" expression=""/>
-    <default field="z" expression=""/>
-  </defaults>
-  <previewExpression>COALESCE( "gid", '&lt;NULL>' )</previewExpression>
-  <layerGeometryType>0</layerGeometryType>
+  <layerGeometryType>2</layerGeometryType>
 </qgis>

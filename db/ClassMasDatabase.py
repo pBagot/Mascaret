@@ -17,10 +17,11 @@ email                :
  *                                                                         *
  ***************************************************************************/
 """
-import psycopg2
-import psycopg2.extras
 import os
 import subprocess
+
+import psycopg2
+import psycopg2.extras
 from qgis.core import QgsVectorLayer, QgsProject
 
 from . import MasObject as Maso
@@ -270,6 +271,7 @@ class ClassMasDatabase(object):
             srid (int): A Spatial Reference System Identifier.
         """
         tabs = self.list_tables(schema)
+
         for tab in tabs:
             if tab in dir(hydro_module):
                 hydro_object = getattr(hydro_module, tab)
@@ -410,10 +412,12 @@ class ClassMasDatabase(object):
                 self.mgis.add_info('<br>Model "{0}" created.'.format(self.SCHEMA))
 
             # table
-            tables = [Maso.scenarios, Maso.lateral_inflows, Maso.lateral_weirs, Maso.extremities,
+            tables = [Maso.events, Maso.lateral_inflows, Maso.lateral_weirs, Maso.extremities,
                       Maso.flood_marks, Maso.hydraulic_head, Maso.outputs,
                       Maso.weirs, Maso.profiles, Maso.topo, Maso.branchs,
                       Maso.observations, Maso.parametres, Maso.resultats, Maso.runs, Maso.laws,
+                      # bassin
+                      Maso.basins, Maso.links, Maso.resultats_basin, Maso.resultats_links,
                       # qualite d'eau
                       Maso.tracer_lateral_inflows, Maso.tracer_physic, Maso.tracer_name,
                       Maso.tracer_config, Maso.laws_wq,
@@ -466,6 +470,60 @@ class ClassMasDatabase(object):
         except Exception as e:
             self.mgis.add_info("Echec of creation model")
             self.mgis.add_info(e)
+
+    def add_table_wq(self, dossier):
+        """
+        Add table  for water Quality model
+        """
+
+        tables = [Maso.tracer_lateral_inflows, Maso.tracer_physic, Maso.tracer_name,
+                  Maso.tracer_config, Maso.laws_wq, Maso.init_conc_config,
+                  Maso.init_conc_wq, Maso.meteo_config, Maso.laws_meteo]
+        tables.sort(key=lambda x: x().order)
+
+        for masobj_class in tables:
+            try:
+                obj = self.process_masobject(masobj_class, 'pg_create_table')
+                if self.mgis.DEBUG:
+                    self.mgis.add_info('  {0} OK'.format(obj.name))
+            except:
+                self.mgis.add_info('failure!<br>{0}'.format(masobj_class))
+
+        sql = """ALTER TABLE {}.runs ADD COLUMN wq text;"""
+        self.run_query(sql.format(self.SCHEMA))
+        sql = """ALTER TABLE {}.extremities ADD COLUMN tracer_boundary_condition_type integer NULL ;"""
+        self.run_query(sql.format(self.SCHEMA))
+        sql = """ALTER TABLE {}.extremities ADD COLUMN law_wq text;"""
+        self.run_query(sql.format(self.SCHEMA))
+        # add parameters
+        sql = """ALTER TABLE {}.parametres ADD COLUMN gui_type text DEFAULT 'parameters';"""
+        self.run_query(sql.format(self.SCHEMA))
+        fichparam = os.path.join(dossier, "parametres.csv")
+        # self.run_query(req.format(self.SCHEMA, fichparam))
+        liste_value = []
+        with open(fichparam, 'r') as file:
+            for ligne in file:
+                list_val = ligne.replace('\n', '').split(';')
+                if list_val[-1] == 'tracers':
+                    liste_value.append(list_val)
+
+        liste_col = self.list_columns('parametres')
+        var = ",".join(liste_col)
+        valeurs = "("
+        for k in liste_col:
+            valeurs += '%s,'
+        valeurs = valeurs[:-1] + ")"
+
+        sql = "INSERT INTO {0}.{1}({2}) VALUES {3};".format(self.SCHEMA,
+                                                            'parametres',
+                                                            var,
+                                                            valeurs)
+
+        self.run_query(sql, many=True, list_many=liste_value)
+
+        # phy parameters
+        tbwq = ClassTableWQ.ClassTableWQ(self.mgis, self)
+        tbwq.default_tab_phy()
 
     def create__first_model(self):
         """ 
@@ -571,11 +629,13 @@ class ClassMasDatabase(object):
             self.group = root.addGroup("Mas_{}".format(self.SCHEMA))
 
         tables = list(self.register.items())
+
         # tables.sort(key=lambda x: x[1].order, reverse=True)
         tables.sort(key=lambda x: x[1].order)
         for (name, obj) in tables:
             try:
-                if obj.order < 13:
+                # TODO modif if new geometric table
+                if obj.order < 16:
                     self.add_to_view(obj)
                     if self.mgis.DEBUG:
                         self.mgis.add_info(' View {0} : OK'.format(obj.name))
@@ -958,71 +1018,15 @@ $BODY$
                     break
 
         return namesh
-# ***********************************
-# UDPATE TABLE
-# **********************************
-    def add_table_wq(self, dossier):
-        """
-        Add table  for water Quality model
-        """
-
-        tables = [Maso.tracer_lateral_inflows, Maso.tracer_physic, Maso.tracer_name,
-                  Maso.tracer_config, Maso.laws_wq, Maso.init_conc_config,
-                  Maso.init_conc_wq, Maso.meteo_config, Maso.laws_meteo]
-        tables.sort(key=lambda x: x().order)
-
-        for masobj_class in tables:
-            try:
-                obj = self.process_masobject(masobj_class, 'pg_create_table')
-                if self.mgis.DEBUG:
-                    self.mgis.add_info('  {0} OK'.format(obj.name))
-            except:
-                self.mgis.add_info('failure!<br>{0}'.format(masobj_class))
-
-        sql = """ALTER TABLE {}.runs ADD COLUMN wq text;"""
-        self.run_query(sql.format(self.SCHEMA))
-        sql = """ALTER TABLE {}.extremities ADD COLUMN tracer_boundary_condition_type integer NULL ;"""
-        self.run_query(sql.format(self.SCHEMA))
-        sql = """ALTER TABLE {}.extremities ADD COLUMN law_wq text;"""
-        self.run_query(sql.format(self.SCHEMA))
-        # add parameters
-        sql = """ALTER TABLE {}.parametres ADD COLUMN gui_type text DEFAULT 'parameters';"""
-        self.run_query(sql.format(self.SCHEMA))
-        fichparam = os.path.join(dossier, "parametres.csv")
-        # self.run_query(req.format(self.SCHEMA, fichparam))
-        liste_value = []
-        with open(fichparam, 'r') as file:
-            for ligne in file:
-                list_val = ligne.replace('\n', '').split(';')
-                if list_val[-1] == 'tracers':
-                    liste_value.append(list_val)
-
-        liste_col = self.list_columns('parametres')
-        var = ",".join(liste_col)
-        valeurs = "("
-        for k in liste_col:
-            valeurs += '%s,'
-        valeurs = valeurs[:-1] + ")"
-
-        sql = "INSERT INTO {0}.{1}({2}) VALUES {3};".format(self.SCHEMA,
-                                                            'parametres',
-                                                            var,
-                                                            valeurs)
-
-        self.run_query(sql, many=True, list_many=liste_value)
-
-        # phy parameters
-        tbwq = ClassTableWQ.ClassTableWQ(self.mgis, self)
-        tbwq.default_tab_phy()
 
     def add_laws_hyd(self):
         self.mgis.add_info('add_laws_hyd')
 
         tables = [Maso.laws_config, Maso.laws_hyd]
         tables.sort(key=lambda x: x().order)
-        liste_tab_exist=self.list_tables(self.SCHEMA)
-        
-        #TODO debug
+        liste_tab_exist = self.list_tables(self.SCHEMA)
+
+        # TODO debug
         # liste_tab_exist=['laws']
         # for masobj_class in tables:
         #     try:
