@@ -26,7 +26,7 @@ from qgis.gui import *
 from qgis.utils import *
 
 from .ClassTableWQ import ClassTableWQ
-from .Graph_WQ import GraphInitConc
+from .graph_WQ import GraphInitConc
 
 if int(qVersion()[0]) < 5:  # qt4
     from qgis.PyQt.QtGui import *

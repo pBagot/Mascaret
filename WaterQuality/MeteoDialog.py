@@ -28,7 +28,7 @@ from qgis.gui import *
 from qgis.utils import *
 
 from .ClassTableWQ import ClassTableWQ
-from .Graph_WQ import GraphMeteo
+from .graph_WQ import GraphMeteo
 from ..Function import data_to_float, data_to_date
 
 if int(qVersion()[0]) < 5:  # qt4

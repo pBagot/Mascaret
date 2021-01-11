@@ -26,7 +26,7 @@ from qgis.gui import *
 from qgis.utils import *
 
 from .ClassTableWQ import ClassTableWQ
-from .Graph_WQ import GraphWaterQ
+from .graph_WQ import GraphWaterQ
 from ..Function import data_to_float
 
 if int(qVersion()[0]) < 5:  # qt4
